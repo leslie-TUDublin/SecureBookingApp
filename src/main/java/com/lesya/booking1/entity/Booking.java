@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Booking {
     // EN: Unique identifier of the booking. PostgreSQL automatically generates this value.
-     //UA: Унікальний ідентифікатор бронювання. PostgreSQL автоматично генерує це значення.
+    //UA: Унікальний ідентифікатор бронювання. PostgreSQL автоматично генерує це значення.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,7 +48,7 @@ public class Booking {
 
     // EN: Total price of the booking. BigDecimal is used because this value represents money.
     //UA: Загальна вартість бронювання. BigDecimal використовується тому, що це грошове значення.
-     @Column(nullable = false, precision = 12, scale = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalPrice;
 
     //EN: Current status of the booking. UA: Поточний статус бронювання.
