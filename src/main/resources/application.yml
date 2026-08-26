@@ -17,3 +17,17 @@ spring:
         format_sql: true
         jdbc:
           time_zone: Europe/Kyiv
+
+
+# ============================================================
+# JWT CONFIGURATION
+
+jwt:
+
+  # EN:Secret key  to sign and verify JWT tokens - must be long enough for the HS256 algorithm.
+  # UA: Секретний ключ для підпису  та перевірки JWT-токенів. Для HS256 він має бути достатньо довгим.
+  secret: booking1_super_secure_jwt_secret_key_2026_dublin_project
+
+  # EN: JWT token lifetime in milliseconds. 86400000 ms = 24 hours.
+  # UA: Час життя JWT-токена в мілісекундах. 86400000 мс = 24 години.
+  expiration: 86400000

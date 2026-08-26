@@ -48,7 +48,7 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- ВИПРАВЛЕНО: Головний стартер для створення Веб-додатків та REST API -->
+        <!-- Головний стартер для створення Веб-додатків та REST API -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -76,7 +76,30 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- ВИПРАВЛЕНО: Головний універсальний стартер для тестування Spring Boot додатка -->
+        <!-- JJWT API для створення та читання JWT-токенів.-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.5</version>
+        </dependency>
+
+        <!--Реалізація JJWT, необхідна під час запуску програми.-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--Інтеграція з Jackson, яку JJWT використовує для роботи з JSON.-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Головний універсальний стартер для тестування Spring Boot додатка -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
