@@ -19,7 +19,7 @@ spring:
           time_zone: Europe/Kyiv
 
 
-# ============================================================
+
 # JWT CONFIGURATION
 
 jwt:

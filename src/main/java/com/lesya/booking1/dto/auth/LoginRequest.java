@@ -6,16 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// EN: DTO used when a user tries to log in.
+// EN: DTO used for login requests.
+// UA: DTO який використовується для запиту входу в систему.
 @Getter
 @Setter
 @NoArgsConstructor
 public class LoginRequest {
 
-    @NotBlank
-    @Email
+    // EN: Email cannot be empty and must have a valid email format.
+    // UA: Email не може бути порожнім і повинен мати правильний формат.
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank
+    // EN: Password cannot be empty.
+    // UA: Пароль не може бути порожнім.
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 }

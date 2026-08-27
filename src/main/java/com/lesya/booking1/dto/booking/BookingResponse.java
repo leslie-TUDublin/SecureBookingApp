@@ -1,47 +1,55 @@
 package com.lesya.booking1.dto.booking;
 
+import com.lesya.booking1.entity.BookingStatus;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// EN: Response DTO returned to the client after successful booking creation.
-// UA: DTO відповіді, який повертається клієнту після успішного створення бронювання.
+// EN: DTO returned to USER after successful booking creation(contains information about the created booking,
+// but does not expose the entire Booking entity).
 @Getter
 public class BookingResponse {
-
     // EN: Unique identifier of the booking.
-    // UA: Унікальний ідентифікатор бронювання.
     private final Long id;
 
     // EN: ID of the booked room.
-    // UA: ID заброньованого номера.
     private final Long roomId;
 
-    // EN: Date when the guest checks in.
-    // UA: Дата заселення гостя.
+    // EN: Email of USER who created the booking (The email comes from the authenticated user).
+    // Email користувача, який створив бронювання. Email береться з авторизованого користувача.
+    private final String userEmail;
+
+    // EN: Date when USER checks in.
     private final LocalDate checkIn;
 
-    // EN: Date when the guest checks out.
-    // UA: Дата виселення гостя.
+    // EN: Date when USER checks out.
     private final LocalDate checkOut;
 
-    // EN: Email of the user who created the booking.
-    // UA: Email користувача, який створив бронювання.
-    private final String userEmail;
+
+    // EN: Total price of the entire booking. BigDecimal is used because this value represents money.
+    private final BigDecimal totalPrice;
+
+
+    // EN: Current status of the booking. For a newly created booking this will normally be PENDING.
+    private final BookingStatus status;
 
     public BookingResponse(
             Long id,
             Long roomId,
+            String userEmail,
             LocalDate checkIn,
             LocalDate checkOut,
-            String userEmail) {
-
+            BigDecimal totalPrice,
+            BookingStatus status
+    ) {
         this.id = id;
         this.roomId = roomId;
+        this.userEmail = userEmail;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
-        this.userEmail = userEmail;
+        this.totalPrice = totalPrice;
+        this.status = status;
     }
 }
-
 
