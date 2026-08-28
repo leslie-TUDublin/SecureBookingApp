@@ -2,29 +2,28 @@ package com.lesya.booking1.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.lesya.booking1.entity.Role;
 
-// EN: DTO  for creating a new user account.
 @Getter
 @Setter
 @NoArgsConstructor
+// EN: DTO for creating a new user account during registration.
+// UA: DTO для створення нового облікового запису користувача під час реєстрації.
 public class RegisterRequest {
 
-    // EN: Email cannot be empty and must have a valid email format.
-    @NotBlank(message = "Email cannot be empty")
+    @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
 
-    // EN: Password must contain at least 8 characters,including 4 security rules
-    @NotBlank(message = "Password cannot be empty")
-    @Pattern(
-            //4 security rules: uppercase letter, lowercase letter, digit, special character.
-            //4 правила безпеки - велика літера, мала, цифра, спецсимвол.
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "Password must be at least 8 characters and include uppercase, lowercase, number and special character"
-    )
+    @NotBlank(message = "Password is required")
     private String password;
+
+    @NotNull(message = "Role is required")
+    // EN: Role assigned to the new user (e.g., USER, ADMIN).
+    // UA: Роль, яка буде призначена новому користувачу (наприклад, USER, ADMIN).
+    private Role role;
 }

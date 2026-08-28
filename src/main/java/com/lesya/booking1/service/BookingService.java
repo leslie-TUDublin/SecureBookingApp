@@ -7,25 +7,25 @@ import com.lesya.booking1.entity.BookingStatus;
 import com.lesya.booking1.entity.Room;
 import com.lesya.booking1.entity.User;
 import com.lesya.booking1.exception.ResourceNotFoundException;
+import com.lesya.booking1.exception.UserAlreadyExistsException;
 import com.lesya.booking1.repository.BookingRepository;
 import com.lesya.booking1.repository.RoomRepository;
 import com.lesya.booking1.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-// BUSINESS LOGIC OF PROJECT
 @Service
+// EN: MAIN business logic.
 public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
 
-    // Constructor Dependency Injection.
     public BookingService(
             BookingRepository bookingRepository,
             UserRepository userRepository,
@@ -35,23 +35,26 @@ public class BookingService {
         this.roomRepository = roomRepository;
     }
 
-    // Return all bookings from the database.
+    // Get all bookings
     public List<Booking> findAllBookings() {
         return bookingRepository.findAll();
     }
 
-    // Create a new booking for the authenticated user.
+    // Create new booking
+    @Transactional
+    // EN: Handles the entire process of booking a room. @Transactional ensures database atomicity.
+    // UA: Обробляє весь процес бронювання кімнати. @Transactional гарантує атомарність операцій в БД.
     public BookingResponse createBooking(BookingRequest request, String userEmail) {
 
-        // FIND USER by email (розпаковуємо з Optional за допомогою .orElseThrow)
+        // Find user
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userEmail));
 
-        // FIND ROOM by its ID (розпаковуємо з Optional за допомогою .orElseThrow)
+        // Find room
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found with ID: " + request.getRoomId()));
 
-        // CHECK ROOM AVAILABILITY
+        // Check room availability
         boolean alreadyBooked = bookingRepository
                 .existsByRoomAndCheckInLessThanAndCheckOutGreaterThan(
                         room,
@@ -60,39 +63,35 @@ public class BookingService {
                 );
 
         if (alreadyBooked) {
-            throw new IllegalStateException("Room is already booked for these dates!");
+            // UserAlreadyExistsException to trigger HTTP 409 Conflict via GlobalExceptionHandler.
+            // Виняток зі статусом 409 Conflict, щоб клієнт отримав правильний HTTP статус.
+            throw new UserAlreadyExistsException("The selected room is already booked for these dates!");
         }
 
-        // CALCULATE TOTAL PRICE
-        // Calculate the number of nights between check-in and check-out dates.
+        // Total price
         long numberOfNights = ChronoUnit.DAYS.between(
                 request.getCheckIn(),
                 request.getCheckOut()
         );
 
-        // Prevent division/multiplication by 0 nights for same-day trips
         if (numberOfNights <= 0) {
             numberOfNights = 1;
         }
 
-        // Calculate the total booking price:
         BigDecimal totalPrice = room.getPrice()
                 .multiply(BigDecimal.valueOf(numberOfNights));
 
-        // CREATE NEW BOOKING ENTITY
+        // Create new Booking entity
         Booking booking = new Booking();
         booking.setCheckIn(request.getCheckIn());
         booking.setCheckOut(request.getCheckOut());
         booking.setUser(user);
         booking.setRoom(room);
-        booking.setStatus(BookingStatus.PENDING);
-        booking.setTotalPrice(totalPrice);
 
-        // SAVE BOOKING into PostgreSQL.
+        //Save booking
         Booking savedBooking = bookingRepository.save(booking);
 
-        // RETURN RESPONSE DTO
-
+        // Return response dto
         return new BookingResponse(
                 savedBooking.getId(),
                 savedBooking.getRoom().getId(),
