@@ -2,6 +2,7 @@ package com.lesya.booking1.service;
 
 import com.lesya.booking1.entity.Room;
 import com.lesya.booking1.repository.RoomRepository;
+import com.lesya.booking1.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,7 +60,8 @@ public class RoomService {
     public Room updateRoom(Long id, Room updatedRoom) {
 
         // First find the existing room in the database.
-        Room existingRoom = roomRepository.findById(id);
+        Room existingRoom = roomRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found with ID: " + id));
 
         // Update room number.
         existingRoom.setNumber(updatedRoom.getNumber());
