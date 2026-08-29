@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+
+
 // EN: The main HANDLER that intercepts/HANDLES errors in the APP and converts them into clean, structured JSON responses.
 // UA: Головний обробник, який перехоплює помилки в додатку та конвертує їх у чисті, структуровані JSON-відповіді.
 @RestControllerAdvice
@@ -21,6 +23,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
         ApiErrorResponse response = new ApiErrorResponse(ex.getMessage(), HttpStatus.CONFLICT.value());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    // EN: Handles cases when Room is already booked
+    // Intercepts: RoomAlreadyBookedException
+    // Returns: HTTP Status 409 (Conflict) + JSON body with error details.
+    @ExceptionHandler(RoomAlreadyBookedException.class)
+    public ResponseEntity<ApiErrorResponse> handleRoomAlreadyBookedException(RoomAlreadyBookedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(ex.getMessage(), HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
     }
 
     // EN: Handles authentication failures (wrong email or password during login).
@@ -58,4 +70,16 @@ public class GlobalExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse(errorMessage, HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    // Intercepts: InvalidBookingDatesException
+    // Returns: HTTP Status 400 (Bad Request)
+    @ExceptionHandler(InvalidBookingDatesException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidBookingDatesException(InvalidBookingDatesException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }

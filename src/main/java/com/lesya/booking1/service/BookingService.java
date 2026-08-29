@@ -1,5 +1,6 @@
 package com.lesya.booking1.service;
 
+
 import com.lesya.booking1.dto.booking.BookingRequest;
 import com.lesya.booking1.dto.booking.BookingResponse;
 import com.lesya.booking1.entity.Booking;
@@ -7,17 +8,17 @@ import com.lesya.booking1.entity.BookingStatus;
 import com.lesya.booking1.entity.Room;
 import com.lesya.booking1.entity.User;
 import com.lesya.booking1.exception.ResourceNotFoundException;
-import com.lesya.booking1.exception.UserAlreadyExistsException;
+import com.lesya.booking1.exception.RoomAlreadyBookedException;
 import com.lesya.booking1.repository.BookingRepository;
 import com.lesya.booking1.repository.RoomRepository;
 import com.lesya.booking1.repository.UserRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;3
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+// BUSINESS LOGIC OF PROJECT
 @Service
 // EN: MAIN business logic.
 public class BookingService {
@@ -25,6 +26,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+
 
     public BookingService(
             BookingRepository bookingRepository,
@@ -35,10 +37,12 @@ public class BookingService {
         this.roomRepository = roomRepository;
     }
 
+
     // Get all bookings
     public List<Booking> findAllBookings() {
         return bookingRepository.findAll();
     }
+
 
     // Create new booking
     @Transactional
@@ -48,11 +52,13 @@ public class BookingService {
 
         // Find user
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userEmail));
+                .orElseThrow(() -> new ResourceNotFoundException
+                        ("User not found with email: " + userEmail));
 
         // Find room
         Room room = roomRepository.findById(request.getRoomId())
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found with ID: " + request.getRoomId()));
+                .orElseThrow(() -> new ResourceNotFoundException
+                        ("Room not found with ID: " + request.getRoomId()));
 
         // Check room availability
         boolean alreadyBooked = bookingRepository
@@ -63,23 +69,27 @@ public class BookingService {
                 );
 
         if (alreadyBooked) {
-            // UserAlreadyExistsException to trigger HTTP 409 Conflict via GlobalExceptionHandler.
-            // Виняток зі статусом 409 Conflict, щоб клієнт отримав правильний HTTP статус.
-            throw new UserAlreadyExistsException("The selected room is already booked for these dates!");
+
+            throw new RoomAlreadyBookedException
+                    ("The selected room is already booked for these dates!");
         }
 
-        // Total price
+        // TOTAL PRICE
         long numberOfNights = ChronoUnit.DAYS.between(
                 request.getCheckIn(),
                 request.getCheckOut()
         );
 
+        //  Check-In >  Check-Out
         if (numberOfNights <= 0) {
-            numberOfNights = 1;
+            throw new InvalidBookingDatesException
+                    ("The check-in date must be earlier than the check-out date. The minimum booking duration is 1 night.");
         }
 
+        // Calculate the total booking price:
         BigDecimal totalPrice = room.getPrice()
                 .multiply(BigDecimal.valueOf(numberOfNights));
+
 
         // Create new Booking entity
         Booking booking = new Booking();
@@ -87,6 +97,8 @@ public class BookingService {
         booking.setCheckOut(request.getCheckOut());
         booking.setUser(user);
         booking.setRoom(room);
+        booking.setStatus(BookingStatus.PENDING);
+        booking.setTotalPrice(totalPrice);
 
         //Save booking
         Booking savedBooking = bookingRepository.save(booking);
