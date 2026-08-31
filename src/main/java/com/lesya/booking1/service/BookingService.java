@@ -9,10 +9,8 @@ import com.lesya.booking1.entity.Room;
 import com.lesya.booking1.entity.User;
 import com.lesya.booking1.exception.ResourceNotFoundException;
 import com.lesya.booking1.exception.RoomAlreadyBookedException;
-import com.lesya.booking1.repository.BookingRepository;
-import com.lesya.booking1.repository.RoomRepository;
-import com.lesya.booking1.repository.UserRepository;
-import org.springframework.stereotype.Service;3
+import com.lesya.booking1.exception.InvalidBookingDatesException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;

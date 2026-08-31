@@ -1,7 +1,6 @@
 package com.lesya.booking1.service;
 
 import com.lesya.booking1.entity.Room;
-import com.lesya.booking1.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -60,10 +59,8 @@ public class RoomService {
     // EN: Find an existing room, update its fields, and save changes.
     // UA: Знайти існуючий номер, оновити його поля та зберегти зміни.
     public Room updateRoom(Long id, Room updatedRoom) {
-        //  .orElseThrow to safely unwrap Optional from repository.
-        //  .orElseThrow для безпечного отримання об'єкта з Optional.
         Room existingRoom = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
+                .orElseThrow(() -> new com.lesya.booking1.exception.ResourceNotFoundException("Room not found with ID: " + id));
 
         existingRoom.setNumber(updatedRoom.getNumber());
         existingRoom.setType(updatedRoom.getType());

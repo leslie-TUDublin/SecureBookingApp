@@ -1,7 +1,6 @@
 package com.lesya.booking1.security;
 
 import com.lesya.booking1.entity.User;
-import com.lesya.booking1.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,4 +1,3 @@
 package com.lesya.booking1.controller;
 
-public class BookingController {
-}
+public class BookingController { }
