@@ -1,6 +1,7 @@
 package com.lesya.booking1.service;
 
 import com.lesya.booking1.entity.Room;
+import com.lesya.booking1.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;

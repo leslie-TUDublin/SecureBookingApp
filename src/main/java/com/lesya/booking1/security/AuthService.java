@@ -6,6 +6,7 @@ import com.lesya.booking1.dto.auth.RegisterRequest;
 import com.lesya.booking1.entity.User;
 import com.lesya.booking1.exception.InvalidCredentialsException;
 import com.lesya.booking1.exception.UserAlreadyExistsException;
+import com.lesya.booking1.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
